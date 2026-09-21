@@ -1,0 +1,78 @@
+<Page
+    x:Class="MachineIDLogger.Views.HardwarePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:MachineIDLogger.ViewModels"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="16" Padding="20,16,24,24">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Hardware Overview" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="Comprehensive hardware inventory and detected subsystem controllers" 
+                           FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" />
+            </StackPanel>
+
+            <Grid ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Processor Card -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE950;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="PROCESSOR" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Cpu.Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Cpu.Architecture, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Memory Card -->
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE7C5;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="MEMORY (RAM)" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Memory.FormattedTotal, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Memory.FormattedAvailable, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Motherboard Card -->
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE8EA;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="MOTHERBOARD" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Motherboard.Product, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Motherboard.Manufacturer, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- BIOS Card -->
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE90F;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="BIOS / UEFI" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Bios.Version, Mode=OneWay}" FontWeight="SemiBold" FontSize="13" />
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Bios.Manufacturer, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

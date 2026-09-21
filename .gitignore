@@ -1,0 +1,43 @@
+## .gitignore for MachineIDLogger (.NET 10 / WinUI 3)
+
+# Build & Compilation Output
+[Bb]in/
+[Oo]bj/
+[Aa]rms/
+[Aa]rm64/
+[Xx]64/
+[Xx]88/
+
+# Distribution & Compiled Binaries (upload to GitHub Releases, not git repo)
+dist/
+
+# Visual Studio / MSBuild
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.dbmdl
+
+# JetBrains Rider / VS Code
+.idea/
+.vscode/
+*.swp
+*.lock
+
+# Testing & Profiling
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Temporary & Log files
+*.log
+*.tmp
+crash.log
+
+# Package Restore
+project.lock.json
+project.fragment.lock.json
+artifacts/

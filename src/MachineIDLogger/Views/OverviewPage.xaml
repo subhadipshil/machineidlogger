@@ -1,0 +1,303 @@
+<Page
+    x:Class="MachineIDLogger.Views.OverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:MachineIDLogger.ViewModels"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="14" Padding="20,16,24,24">
+            
+            <!-- Page Header -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Overview" FontSize="20" FontWeight="SemiBold" Foreground="{ThemeResource TextFillColorPrimary}" />
+                    <TextBlock Text="Local Windows machine specifications, system state, and active machine identity" 
+                               FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Command="{x:Bind ViewModel.RefreshCommand}" ToolTipService.ToolTip="Refresh All Machine Specifications">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE72C;" FontSize="12" />
+                            <TextBlock Text="Refresh" FontSize="12" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Copy feedback banner if any -->
+            <InfoBar IsOpen="{x:Bind ViewModel.CopyFeedback, Mode=OneWay, Converter={StaticResource StringToBoolConverter}}"
+                     Severity="Success" Title="{x:Bind ViewModel.CopyFeedback, Mode=OneWay}" 
+                     IsClosable="True" FontSize="12" />
+
+            <!-- Core Identity Section Card -->
+            <Border Style="{StaticResource TechnicalCardStyle}" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}">
+                <StackPanel Spacing="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8D7;" FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                            <TextBlock Text="ACTIVE WINDOWS MACHINE IDENTIFIER" Style="{StaticResource SectionHeaderStyle}" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="HKLM\SOFTWARE\Microsoft\Cryptography:MachineGuid" FontSize="11" Foreground="{ThemeResource TextFillColorTertiary}" />
+                    </Grid>
+
+                    <Grid Background="{ThemeResource LayerFillColorDefault}" CornerRadius="4" Padding="12,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.MachineGuid, Mode=OneWay}" 
+                                   FontFamily="{StaticResource MonospaceFont}" FontSize="18" FontWeight="SemiBold" 
+                                   VerticalAlignment="Center" IsTextSelectionEnabled="True" />
+                        <Button Grid.Column="1" Command="{x:Bind ViewModel.CopyMachineGuidCommand}" Click="CopyMachineGuid_Click" ToolTipService.ToolTip="Copy MachineGuid to Clipboard">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE8C8;" FontSize="12" />
+                                <TextBlock Text="Copy" FontSize="12" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="SMBIOS SYSTEM UUID" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                            <TextBlock Text="{x:Bind ViewModel.Overview.SmbiosUuid, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" FontSize="11" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="BIOS SERIAL" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                            <TextBlock Text="{x:Bind ViewModel.Overview.BiosSerial, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" FontSize="11" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="MOTHERBOARD SERIAL" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                            <TextBlock Text="{x:Bind ViewModel.Overview.MotherboardSerial, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" FontSize="11" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- 2-Column Grid of System Components -->
+            <Grid ColumnSpacing="12" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- 1. System Info -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE7F8;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="SYSTEM PLATFORM" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <Grid RowSpacing="6" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Computer Name" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ViewModel.Overview.ComputerName, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" FontWeight="SemiBold" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Manufacturer" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.Overview.Manufacturer, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Model" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.Overview.Model, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Windows Edition" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.Overview.OperatingSystem.Caption, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Build / Arch" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{x:Bind ViewModel.Overview.OperatingSystem.BuildNumber, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. CPU Card -->
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE950;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="PROCESSOR" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{x:Bind ViewModel.Overview.Cpu.Name, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" FontWeight="SemiBold" TextWrapping="Wrap" />
+
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="PHYSICAL CORES" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                                <TextBlock Text="{x:Bind ViewModel.Overview.Cpu.PhysicalCores, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="LOGICAL THREADS" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                                <TextBlock Text="{x:Bind ViewModel.Overview.Cpu.LogicalProcessors, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Spacing="3">
+                            <Grid>
+                                <TextBlock Text="Live CPU Utilization" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                <TextBlock Text="{x:Bind ViewModel.LiveCpuUsage, Mode=OneWay, Converter={StaticResource PercentageFormatConverter}}" HorizontalAlignment="Right" FontSize="11" />
+                            </Grid>
+                            <ProgressBar Value="{x:Bind ViewModel.LiveCpuUsage, Mode=OneWay}" Maximum="100" Height="4" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Memory Card -->
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE7C5;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="MEMORY (RAM)" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="TOTAL INSTALLED" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                                <TextBlock Text="{x:Bind ViewModel.Overview.Memory.FormattedTotal, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" FontWeight="SemiBold" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="AVAILABLE" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                                <TextBlock Text="{x:Bind ViewModel.Overview.Memory.FormattedAvailable, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="MODULES" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                                <TextBlock Text="{x:Bind ViewModel.Overview.Memory.ModuleCount, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Spacing="3">
+                            <Grid>
+                                <TextBlock Text="{x:Bind ViewModel.LiveRamFormatted, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            </Grid>
+                            <ProgressBar Value="{x:Bind ViewModel.LiveRamUsage, Mode=OneWay}" Maximum="100" Height="4" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. Graphics (GPU) Card -->
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE790;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="GRAPHICS ADAPTERS" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+
+                        <ListView ItemsSource="{x:Bind ViewModel.Overview.Gpus, Mode=OneWay}" SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding DriverVersion, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding FormattedDedicatedMemory}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. Storage Card -->
+                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xEDA2;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="STORAGE VOLUMES" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+
+                        <ListView ItemsSource="{x:Bind ViewModel.Overview.Volumes, Mode=OneWay}" SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DriveLetter}" FontWeight="SemiBold" FontSize="12" Margin="0,0,10,0" VerticalAlignment="Center" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <ProgressBar Value="{Binding PercentUsed}" Maximum="100" Height="4" />
+                                            <TextBlock Text="{Binding FormattedFree}" FontSize="10" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding FormattedTotal}" FontSize="11" Margin="8,0,0,0" VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. Network Card -->
+                <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource TechnicalCardStyle}">
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE839;" FontSize="13" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="NETWORK &amp; MAC ADDRESS" Style="{StaticResource SectionHeaderStyle}" />
+                        </StackPanel>
+
+                        <Grid RowSpacing="6" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Primary MAC" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ViewModel.Overview.PrimaryMacAddress, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Uptime" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.Overview.OperatingSystem.FormattedUptime, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Time Zone" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.Overview.TimeZone, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

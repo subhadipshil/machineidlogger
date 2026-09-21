@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MachineIDLogger.Core/MachineIDLogger.Core.csproj" />
+    <Project Path="src/MachineIDLogger.Elevator/MachineIDLogger.Elevator.csproj" />
+    <Project Path="src/MachineIDLogger.Infrastructure/MachineIDLogger.Infrastructure.csproj" />
+    <Project Path="src/MachineIDLogger.Services/MachineIDLogger.Services.csproj" />
+    <Project Path="src/MachineIDLogger/MachineIDLogger.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MachineIDLogger.Tests/MachineIDLogger.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,190 @@
+<Page
+    x:Class="MachineIDLogger.Views.MachineGuidPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:MachineIDLogger.Core.Models"
+    xmlns:vm="using:MachineIDLogger.ViewModels"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="16" Padding="20,16,24,24">
+            
+            <!-- Page Title -->
+            <StackPanel Spacing="2">
+                <TextBlock Text="Windows Machine ID &amp; Identifiers" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="Inspect system identifiers, verify firmware provenance, and safely manage Windows MachineGuid" 
+                           FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" />
+            </StackPanel>
+
+            <!-- Operation Feedback InfoBar -->
+            <InfoBar IsOpen="{x:Bind ViewModel.HasOperationResult, Mode=OneWay}"
+                     Severity="{x:Bind ViewModel.OperationSucceeded, Mode=OneWay, Converter={StaticResource DiagnosticStatusToBrushConverter}}"
+                     Title="{x:Bind ViewModel.OperationResultBanner, Mode=OneWay}"
+                     IsClosable="True" />
+
+            <!-- Core MachineGuid Hero Box -->
+            <Border Style="{StaticResource TechnicalCardStyle}" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8D7;" FontSize="16" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                            <TextBlock Text="WINDOWS MACHINEGUID" Style="{StaticResource SectionHeaderStyle}" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="Source: HKLM\SOFTWARE\Microsoft\Cryptography:MachineGuid" FontSize="11" Foreground="{ThemeResource TextFillColorTertiary}" />
+                    </Grid>
+
+                    <Grid Background="{ThemeResource LayerFillColorDefault}" CornerRadius="4" Padding="14,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind ViewModel.CurrentMachineGuid, Mode=OneWay}"
+                                   FontFamily="{StaticResource MonospaceFont}" FontSize="20" FontWeight="Bold" 
+                                   VerticalAlignment="Center" IsTextSelectionEnabled="True" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                            <Button Command="{x:Bind ViewModel.CopyCurrentGuidCommand}" Click="CopyCurrentGuid_Click" ToolTipService.ToolTip="Copy active MachineGuid">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE8C8;" FontSize="12" />
+                                    <TextBlock Text="Copy" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{ThemeResource AccentButtonStyle}" Command="{x:Bind ViewModel.OpenChangeDialogCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE70F;" FontSize="12" />
+                                    <TextBlock Text="Change Machine ID" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="The Windows MachineGuid is a persistent software installation identifier created during Windows setup. Changing it creates an automatic pre-modification backup and verifies the 64-bit registry value immediately after writing." 
+                               FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Inline Change Dialog Container -->
+            <Border Style="{StaticResource TechnicalCardStyle}" Background="{ThemeResource LayerFillColorAlt}" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                    Visibility="{x:Bind ViewModel.IsChangeDialogOpen, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <TextBlock Text="Change Windows Machine ID?" FontSize="16" FontWeight="SemiBold" />
+                        <Button HorizontalAlignment="Right" Command="{x:Bind ViewModel.CloseChangeDialogCommand}">
+                            <FontIcon Glyph="&#xE711;" FontSize="11" />
+                        </Button>
+                    </Grid>
+
+                    <TextBlock Text="Enter a valid RFC 4122 GUID or generate a new random UUID. A backup will be saved automatically before mutation." FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" />
+
+                    <Grid RowSpacing="8" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Current ID:" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ViewModel.CurrentMachineGuid, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" VerticalAlignment="Center" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="New ID:" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.NewGuidInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 FontFamily="{StaticResource MonospaceFont}" PlaceholderText="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+                        <Button Grid.Row="1" Grid.Column="2" Command="{x:Bind ViewModel.GenerateRandomGuidCommand}" ToolTipService.ToolTip="Generate Random UUID">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE777;" FontSize="12" />
+                                <TextBlock Text="Generate" FontSize="12" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock Text="{x:Bind ViewModel.ValidationMessage, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+
+                    <InfoBar IsOpen="True" Severity="Informational" IsClosable="False"
+                             Title="Technical Notice: This operation will only change the software MachineGuid in HKLM\SOFTWARE\Microsoft\Cryptography. It will not modify physical hardware serials, SMBIOS firmware UUIDs, or drive controller serial numbers." />
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                        <Button Content="Cancel" Command="{x:Bind ViewModel.CloseChangeDialogCommand}" />
+                        <Button Content="Backup &amp; Change" Style="{ThemeResource AccentButtonStyle}" 
+                                IsEnabled="{x:Bind ViewModel.IsInputValid, Mode=OneWay}"
+                                Command="{x:Bind ViewModel.ApplyChangeCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Complete Technical Identifiers Table -->
+            <Border Style="{StaticResource TechnicalCardStyle}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="SYSTEM IDENTIFIER INVENTORY &amp; MUTABILITY" Style="{StaticResource SectionHeaderStyle}" />
+                        <TextBlock Grid.Column="1" Text="Explicit Provenance &amp; Firmware Mutability" FontSize="11" Foreground="{ThemeResource TextFillColorTertiary}" />
+                    </Grid>
+
+                    <ListView ItemsSource="{x:Bind ViewModel.Identifiers, Mode=OneWay}" SelectionMode="None">
+                        <ListView.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid Padding="12,8" Background="{ThemeResource LayerFillColorDefault}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Identifier" FontWeight="SemiBold" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                    <TextBlock Grid.Column="1" Text="Value" FontWeight="SemiBold" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                    <TextBlock Grid.Column="2" Text="Source" FontWeight="SemiBold" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                    <TextBlock Grid.Column="3" Text="Mutability" FontWeight="SemiBold" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" />
+                                    <TextBlock Grid.Column="4" Text="Action" FontWeight="SemiBold" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" HorizontalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.HeaderTemplate>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:IdentifierInfo">
+                                <Grid Padding="12,8" BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="0,0,0,1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind Name}" FontSize="12" FontWeight="SemiBold" />
+                                        <TextBlock Text="{x:Bind Category}" FontSize="10" Foreground="{ThemeResource TextFillColorTertiary}" />
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Value}" FontFamily="{StaticResource MonospaceFont}" FontSize="11" VerticalAlignment="Center" IsTextSelectionEnabled="True" TextTrimming="CharacterEllipsis" />
+
+                                    <TextBlock Grid.Column="2" Text="{x:Bind Source}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+
+                                    <Border Grid.Column="3" Background="{ThemeResource LayerFillColorDefault}" CornerRadius="3" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind FormattedStatus}" FontSize="10" FontWeight="SemiBold" />
+                                    </Border>
+
+                                    <Button Grid.Column="4" Tag="{x:Bind}" Click="CopyIdentifier_Click" HorizontalAlignment="Center" Padding="6,4" ToolTipService.ToolTip="Copy Value">
+                                        <FontIcon Glyph="&#xE8C8;" FontSize="11" />
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

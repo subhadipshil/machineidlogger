@@ -1,0 +1,162 @@
+<Page
+    x:Class="MachineIDLogger.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:MachineIDLogger.ViewModels"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="16" Padding="20,16,24,24">
+            
+            <!-- Application Hero / About Section -->
+            <Border Style="{StaticResource TechnicalCardStyle}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="ms-appx:///Assets/AppIcon.png" Width="48" Height="48" Margin="0,0,16,0" VerticalAlignment="Center" />
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{x:Bind ViewModel.AppName, Mode=OneWay}" FontSize="18" FontWeight="Bold" />
+                            <TextBlock Text="Windows System Inspection &amp; Machine Identity Management Utility" 
+                                       FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" />
+                            <TextBlock Text="Version 1.0.0 (Build 2026.09.21.1) • .NET 10 LTS • WinUI 3" 
+                                       FontSize="11" Foreground="{ThemeResource TextFillColorTertiary}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Button Command="{x:Bind ViewModel.CheckForUpdatesCommand}" Click="CheckForUpdates_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE777;" FontSize="12" />
+                                    <TextBlock Text="Check for Updates" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{x:Bind ViewModel.OpenGitHubCommand}" Click="OpenGitHub_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE8A7;" FontSize="12" />
+                                    <TextBlock Text="GitHub" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="{x:Bind ViewModel.UpdateStatus, Mode=OneWay}" 
+                               FontSize="12" FontWeight="SemiBold" Foreground="{ThemeResource AccentFillColorDefaultBrush}"
+                               Visibility="{x:Bind ViewModel.UpdateStatus, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Technical Architecture Card -->
+            <Border Style="{StaticResource TechnicalCardStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="SYSTEM &amp; RUNTIME ENVIRONMENT" Style="{StaticResource SectionHeaderStyle}" />
+
+                    <Grid RowSpacing="6" ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Target Framework" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ViewModel.TargetFramework, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Architecture Target" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind ViewModel.Architecture, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Developer" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{x:Bind ViewModel.Developer, Mode=OneWay}" Style="{StaticResource ValueTextStyle}" FontWeight="SemiBold" />
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Repository" Style="{StaticResource ValueTextStyle}" Foreground="{ThemeResource TextFillColorSecondary}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{x:Bind ViewModel.GitHubRepoUrl, Mode=OneWay}" Style="{StaticResource MonospaceValueStyle}" IsTextSelectionEnabled="True" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Support Developer / Buy Me a Coffee Section -->
+            <Border Style="{StaticResource TechnicalCardStyle}" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}">
+                <StackPanel Spacing="12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE7EB;" FontSize="15" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                            <TextBlock Text="SUPPORT THE DEVELOPER / BUY ME A COFFEE ☕" Style="{StaticResource SectionHeaderStyle}" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="MachineIDLogger is free and open-source software built for the Windows developer, technician, and power user community. If this utility helped you diagnose systems or manage identifiers, your support keeps continued development and updates going!" 
+                               FontSize="12" Foreground="{ThemeResource TextFillColorSecondary}" TextWrapping="Wrap" />
+
+                    <!-- UPI ID Box -->
+                    <Grid Background="{ThemeResource LayerFillColorDefault}" CornerRadius="4" Padding="14,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Text="UPI PAYMENT ID" Style="{StaticResource SectionHeaderStyle}" FontSize="10" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.UpiId, Mode=OneWay}"
+                                   FontFamily="{StaticResource MonospaceFont}" FontSize="16" FontWeight="Bold" 
+                                   VerticalAlignment="Center" IsTextSelectionEnabled="True" />
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                            <Button Style="{ThemeResource AccentButtonStyle}" Command="{x:Bind ViewModel.CopyUpiIdCommand}" Click="CopyUpiId_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE8C8;" FontSize="12" />
+                                    <TextBlock Text="Copy UPI ID" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{x:Bind ViewModel.OpenUpiPaymentCommand}" Click="OpenUpiPayment_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE8A7;" FontSize="12" />
+                                    <TextBlock Text="Open UPI Link" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{x:Bind ViewModel.OpenBuyMeCoffeeWebCommand}" Click="OpenBuyMeCoffeeWeb_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xEC05;" FontSize="12" />
+                                    <TextBlock Text="Buy Me a Coffee (Web)" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{x:Bind ViewModel.ToggleQrCommand}" Click="ToggleQr_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE72D;" FontSize="12" />
+                                    <TextBlock Text="Show / Hide QR" FontSize="12" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Copy feedback toast -->
+                    <InfoBar IsOpen="{x:Bind ViewModel.CopyFeedback, Mode=OneWay, Converter={StaticResource StringToBoolConverter}}"
+                             Severity="Success" Title="{x:Bind ViewModel.CopyFeedback, Mode=OneWay}" IsClosable="True" />
+
+                    <!-- UPI QR Display -->
+                    <Border Visibility="{x:Bind ViewModel.IsQrVisible, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}"
+                            Background="White" CornerRadius="12" Padding="6" HorizontalAlignment="Center" Margin="0,8" BorderThickness="1" BorderBrush="#CBD5E1">
+                        <Image Source="ms-appx:///Assets/BeautifiedQr.png" Width="260" Height="303" Stretch="Uniform" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

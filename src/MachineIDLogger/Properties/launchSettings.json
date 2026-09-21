@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MachineIDLogger (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MachineIDLogger (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
